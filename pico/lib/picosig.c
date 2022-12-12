@@ -172,7 +172,7 @@ static pico_status_t sigInitialize(register picodata_ProcessingUnit this, picoos
          * ------------------------------------------------------------------*/
         /*pitch , volume , speaker modifiers*/
         sig_subObj->pMod = 1.0f;
-        sig_subObj->vMod = 1.0f;
+        sig_subObj->vMod = 0.5f;
         sig_subObj->sMod = 1.0f;
     } else {
         /*-----------------------------------------------------------------
@@ -208,7 +208,7 @@ static pico_status_t sigTerminate(register picodata_ProcessingUnit this)
 /**
  * deallocates the PU (processing unit) sub object
  * @param    this : sig PU object
- * @param    mm : the engine memory manager
+ * @param    mm : the androidEngineStruct memory manager
  * @return  PICO_OK : deallocation ok
  * @return  PICO_ERR_OTHER : deallocation failed
  * @callgraph
@@ -244,8 +244,8 @@ static pico_status_t sigSubObjDeallocate(register picodata_ProcessingUnit this,
 
 /**
  * creates a new sig processing unit
- * @param    mm : the engine memory manager
- * @param    common : the engine common object
+ * @param    mm : the androidEngineStruct memory manager
+ * @param    common : the androidEngineStruct common object
  * @param    cbIn : the PU input buffer
  * @param    cbOut : the PU output buffer
  * @param    voice : the voice descriptor object

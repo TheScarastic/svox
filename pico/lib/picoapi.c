@@ -169,7 +169,7 @@ PICO_FUNC pico_terminate(
     } else {
         pico_System sys = *system;
 
-        /* close engine(s) */
+        /* close androidEngineStruct(s) */
         picoctrl_disposeEngine(sys->common->mm, sys->rm, &sys->engine);
 
         /* close all resources */
@@ -496,10 +496,10 @@ PICO_FUNC pico_releaseVoiceDefinition(
 /* *** Engine creation and deletion functions *********************************/
 
 /**
- * pico_newEngine : Creates and initializes a new Pico engine
+ * pico_newEngine : Creates and initializes a new Pico androidEngineStruct
  * @param    system : pointer to a pico_System struct
  * @param    *voiceName : pointer to the area containing the voice definition
- * @param    *outEngine : pointer to the Pico engine handle
+ * @param    *outEngine : pointer to the Pico androidEngineStruct handle
  * @return  PICO_OK : successful
  * @return     PICO_ERR_INVALID_HANDLE, PICO_ERR_NULLPTR_ACCESS : errors
  * @callgraph
@@ -513,7 +513,7 @@ PICO_FUNC pico_newEngine(
 {
     pico_Status status = PICO_OK;
 
-    PICODBG_DEBUG(("creating engine for voice '%s'", (picoos_char *) voiceName));
+    PICODBG_DEBUG(("creating androidEngineStruct for voice '%s'", (picoos_char *) voiceName));
 
     if (!is_valid_system_handle(system)) {
         status = PICO_ERR_INVALID_HANDLE;
@@ -531,7 +531,7 @@ PICO_FUNC pico_newEngine(
                 system->engine = (picoctrl_Engine) *outEngine;
             } else {
                 status = picoos_emRaiseException(system->common->em, PICO_EXC_OUT_OF_MEM,
-                            (picoos_char *) "out of memory creating new engine", NULL);
+                            (picoos_char *) "out of memory creating new androidEngineStruct", NULL);
             }
         } else {
             status = picoos_emRaiseException(system->common->em, PICO_EXC_MAX_NUM_EXCEED,
@@ -543,9 +543,9 @@ PICO_FUNC pico_newEngine(
 }
 
 /**
- * pico_disposeEngine : Disposes a Pico engine
+ * pico_disposeEngine : Disposes a Pico androidEngineStruct
  * @param    system : pointer to a pico_System struct
- * @param    *inoutEngine : pointer to the Pico engine handle
+ * @param    *inoutEngine : pointer to the Pico androidEngineStruct handle
  * @return  PICO_OK : successful
  * @return     PICO_ERR_INVALID_HANDLE, PICO_ERR_NULLPTR_ACCESS : errors
  * @callgraph
@@ -582,7 +582,7 @@ PICO_FUNC pico_disposeEngine(
 
 /**
  * pico_putTextUtf8 : Puts UTF8 text into Pico text input buffer
- * @param    engine : pointer to a Pico engine handle
+ * @param    engine : pointer to a Pico androidEngineStruct handle
  * @param    *text : pointer to the text buffer
  * @param    textSize : text buffer size
  * @param    *bytesPut : pointer to variable to receive the number of bytes put
@@ -616,8 +616,8 @@ PICO_FUNC pico_putTextUtf8(
 }
 
 /**
- * pico_getData : Gets speech data from the engine.
- * @param    engine : pointer to a Pico engine handle
+ * pico_getData : Gets speech data from the androidEngineStruct.
+ * @param    engine : pointer to a Pico androidEngineStruct handle
  * @param    *buffer : pointer to output buffer
  * @param    bufferSize : out buffer size
  * @param    *bytesReceived : pointer to a variable to receive the number of bytes received
@@ -658,8 +658,8 @@ PICO_FUNC pico_getData(
 }
 
 /**
- * pico_resetEngine : Resets the engine
- * @param    engine : pointer to a Pico engine handle
+ * pico_resetEngine : Resets the androidEngineStruct
+ * @param    engine : pointer to a Pico androidEngineStruct handle
  * @param resetMode : reset mode; one of PICO_RESET_FULL or PICO_RESET_SOFT
  * @return  PICO_OK : successful
  * @return     PICO_ERR_INVALID_HANDLE, PICO_ERR_NULLPTR_ACCESS : errors
@@ -686,8 +686,8 @@ PICO_FUNC pico_resetEngine(
 }
 
 /**
- * pico_getEngineStatusMessage : Returns the engine status or error description
- * @param    engine : pointer to a Pico engine handle
+ * pico_getEngineStatusMessage : Returns the androidEngineStruct status or error description
+ * @param    engine : pointer to a Pico androidEngineStruct handle
  * @param    errCode : error code
  * @param    outMessage : pointer to a memory area to receive the output message
  * @return  PICO_OK : successful
@@ -708,7 +708,7 @@ PICO_FUNC pico_getEngineStatusMessage(
     if (!picoctrl_isValidEngineHandle((picoctrl_Engine) engine)) {
         status = PICO_ERR_INVALID_HANDLE;
         if (outMessage != NULL) {
-            picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "'engine' not initialized", PICO_RETSTRINGSIZE);
+            picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "'androidEngineStruct' not initialized", PICO_RETSTRINGSIZE);
         }
     } else if (outMessage == NULL) {
         status = PICO_ERR_NULLPTR_ACCESS;
@@ -716,7 +716,7 @@ PICO_FUNC pico_getEngineStatusMessage(
         picoos_Common common = picoctrl_engGetCommon((picoctrl_Engine) engine);
         if (picoos_emGetExceptionCode(common->em) == PICO_OK) {
             if (errCode == PICO_OK) {
-                picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "engine ok", PICO_RETSTRINGSIZE);
+                picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "androidEngineStruct ok", PICO_RETSTRINGSIZE);
             } else {
                 /* exceptionManager was not informed yet; produce default message */
                 picoos_setErrorMsg((picoos_char *) outMessage, PICO_RETSTRINGSIZE, errCode, NULL, NULL, NULL);
@@ -731,7 +731,7 @@ PICO_FUNC pico_getEngineStatusMessage(
 
 /**
  * pico_getNrEngineWarnings : Returns the number of warnings
- * @param    engine : pointer to a Pico engine handle
+ * @param    engine : pointer to a Pico androidEngineStruct handle
  * @param    *outNrOfWarnings: pointer to a variable to receive the number of warnings
  * @return  PICO_OK : successful
  * @return     PICO_ERR_INVALID_HANDLE, PICO_ERR_NULLPTR_ACCESS : errors
@@ -762,7 +762,7 @@ PICO_FUNC pico_getNrEngineWarnings(
 
 /**
      * pico_getEngineWarning : Returns a description of a warning
-     * @param    engine : pointer to a Pico engine handle
+     * @param    engine : pointer to a Pico androidEngineStruct handle
      * @param    warningIndex : warning index
      * @param    *outCode: pointer to a variable to receive the warning code
      * @param    outMessage: pointer to a memory area to receive the warning description
@@ -783,7 +783,7 @@ PICO_FUNC pico_getEngineWarning(
     if (!picoctrl_isValidEngineHandle((picoctrl_Engine) engine)) {
         status = PICO_ERR_INVALID_HANDLE;
         if (outMessage != NULL) {
-            picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "'engine' not initialized", PICO_RETSTRINGSIZE);
+            picoos_strlcpy((picoos_char *) outMessage, (picoos_char *) "'androidEngineStruct' not initialized", PICO_RETSTRINGSIZE);
         }
     } else if (warningIndex < 0) {
         status = PICO_ERR_INDEX_OUT_OF_RANGE;

@@ -441,7 +441,7 @@ static picoos_int32 tok_putToUtf (tok_subobj_t * tok, picoos_uchar ch)
             tok->utflen = 0;
         }
         (tok->utfpos)++;
-        if ((tok->utfpos == tok->utflen)) {
+        if (tok->utfpos == tok->utflen) {
             if ((tok->utfpos < PICOBASE_UTF8_MAXLEN)) {
                 tok->utf[tok->utfpos] = 0;
             }
@@ -754,7 +754,7 @@ static void tok_interpretMarkup (picodata_ProcessingUnit this, tok_subobj_t * to
                     tok_putItem(this, tok, PICODATA_ITEM_CMD, PICODATA_ITEMINFO1_CMD_SPEAKER, PICODATA_ITEMINFO2_CMD_RELATIVE, uval, (picoos_uchar*)"");
                 } else {
                     uval = picoos_atoi((picoos_char*)tok->markupParams[0].paramVal);
-                    tok_checkLimits(this, & uval, PICO_SPEAKER_MIN, PICO_SPEAKER_MAX, (picoos_uchar*)"volume");
+                    tok_checkLimits(this, & uval, PICO_SPEAKER_MIN, PICO_SPEAKER_MAX, (picoos_uchar*)"speaker");
                     tok_putItem(this, tok, PICODATA_ITEM_CMD, PICODATA_ITEMINFO1_CMD_SPEAKER, PICODATA_ITEMINFO2_CMD_ABSOLUTE, uval, (picoos_uchar*)"");
                 }
                 done = TRUE;
@@ -1339,7 +1339,7 @@ static void tok_treatChar (picodata_ProcessingUnit this, tok_subobj_t * tok, pic
             }
             if ((tok->utf[tok->utfpos-1] > (picoos_uchar)' ')) {
                 tok->nrEOL = 0;
-            } else if ((tok->utf[tok->utfpos-1] == EOL)) {
+            } else if (tok->utf[tok->utfpos-1] == EOL) {
                 tok->nrEOL++;
             }
             if (markupHandling && (tok->markupState != MSNotInMarkup)) {

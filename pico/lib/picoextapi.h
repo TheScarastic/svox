@@ -86,7 +86,7 @@ PICO_FUNC picoext_initialize(
 
 /* System and lingware inspection functions ***********************************/
 
-/* Returns version information of the current Pico engine. */
+/* Returns version information of the current Pico androidEngineStruct. */
 
 PICO_FUNC picoext_getVersionInfo(
         pico_Retstring outInfo,

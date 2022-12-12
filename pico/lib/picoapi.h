@@ -41,10 +41,10 @@ system level take a 'pico_System' handle as the first parameter.
 
 @e SVOX_Pico_Engine
 
-A SVOX Pico 'engine' provides the functions needed to perform actual
-synthesis. Currently there can be only one engine instance at a time
+A SVOX Pico 'androidEngineStruct' provides the functions needed to perform actual
+synthesis. Currently there can be only one androidEngineStruct instance at a time
 (concurrent engines will be possible in the future). All API functions
-at the engine level take a 'pico_Engine' handle as the first
+at the androidEngineStruct level take a 'pico_Engine' handle as the first
 parameter.
 
 @e SVOX_Pico_Resource
@@ -94,7 +94,7 @@ All API functions return a status code which is one of the status
 constants defined in picodefs.h. In case of an error, a more detailed
 description of the status can be retrieved by calling function
 'pico_getSystemStatusMessage' (or 'pico_getEngineStatusMessage'
-if the error happened on the SVOX Pico engine level).
+if the error happened on the SVOX Pico androidEngineStruct level).
 
 Unlike errors, warnings do not prevent an API function from performing
 its function, but output might not be as intended. Functions
@@ -136,7 +136,7 @@ extern "C" {
 /* PICO data types                                                    */
 /* ********************************************************************/
 
-/* Handle types (opaque) for Pico system, resource, engine ************/
+/* Handle types (opaque) for Pico system, resource, androidEngineStruct ************/
 
 typedef struct pico_system   *pico_System;
 typedef struct pico_resource *pico_Resource;
@@ -217,7 +217,7 @@ PICO_FUNC pico_initialize(
    are unloaded automatically. The memory area provided to Pico in
    'pico_initialize' is released. The system handle becomes
    invalid. It is not allowed to call this function as long as Pico
-   engine instances are existing. No API function may be called after
+   androidEngineStruct instances are existing. No API function may be called after
    this function, except for 'pico_initialize', which reinitializes
    the system.
 */
@@ -269,7 +269,7 @@ PICO_FUNC pico_getSystemWarning(
    Loads a resource file into the Pico system. The number of resource
    files loaded in parallel is limited by PICO_MAX_NUM_RESOURCES.
    Loading of a resource file may be done at any time (even in
-   parallel to a running engine doing TTS synthesis), but with the
+   parallel to a running androidEngineStruct doing TTS synthesis), but with the
    general restriction that functions taking a system handle as their
    first argument must be called in a mutually exclusive fashion. The
    loaded resource will be available only to engines started after the
@@ -283,7 +283,7 @@ PICO_FUNC pico_loadResource(
         );
 
 /**
-   Unloads a resource file from the Pico system. If no engine uses the
+   Unloads a resource file from the Pico system. If no androidEngineStruct uses the
    resource file, the resource is removed immediately and its
    associated internal memory is released, otherwise
    PICO_EXC_RESOURCE_BUSY is returned.
@@ -322,7 +322,7 @@ PICO_FUNC pico_createVoiceDefinition(
    Adds a mapping pair ('voiceName', 'resourceName') to the voice
    definition. Multiple mapping pairs can added to a voice defintion.
    When calling 'pico_newEngine' with 'voiceName', the corresponding
-   resources from the mappings will be used with that engine. */
+   resources from the mappings will be used with that androidEngineStruct. */
 
 PICO_FUNC pico_addResourceToVoiceDefinition(
         pico_System system,
@@ -344,7 +344,7 @@ PICO_FUNC pico_releaseVoiceDefinition(
 /* Engine creation and deletion functions *****************************/
 
 /**
-   Creates and initializes a new Pico engine instance and returns its
+   Creates and initializes a new Pico androidEngineStruct instance and returns its
    handle in 'outEngine'. Only one instance per system is currently
    possible.
 */
@@ -356,8 +356,8 @@ PICO_FUNC pico_newEngine(
 
 
 /**
- Disposes a Pico engine and releases all memory it occupied. The
- engine handle becomes invalid.
+ Disposes a Pico androidEngineStruct and releases all memory it occupied. The
+ androidEngineStruct handle becomes invalid.
 */
 PICO_FUNC pico_disposeEngine(
         pico_System system,
@@ -393,8 +393,8 @@ PICO_FUNC pico_putTextUtf8(
         );
 
 /**
-   Gets speech data from the engine. Every time this function is
-   called, the engine performs, within a short time slot, a small
+   Gets speech data from the androidEngineStruct. Every time this function is
+   called, the androidEngineStruct performs, within a short time slot, a small
    amount of processing its input text, and then gives control back to
    the calling application. Ie. after calling 'pico_putTextUtf8'
    (incl. a final embedded '\0'), this function needs to be called
@@ -418,10 +418,10 @@ PICO_FUNC pico_getData(
         );
 
 /**
-   Resets the engine and clears all engine-internal buffers, in
+   Resets the androidEngineStruct and clears all androidEngineStruct-internal buffers, in
    particular text input and signal data output buffers.
-   'resetMode' is one of 'PICO_RESET_SOFT', to be used to flush the engine,
-   or 'PICO_RESET_FULL', to reset the engine after an engine error.
+   'resetMode' is one of 'PICO_RESET_SOFT', to be used to flush the androidEngineStruct,
+   or 'PICO_RESET_FULL', to reset the androidEngineStruct after an androidEngineStruct error.
 */
 PICO_FUNC pico_resetEngine(
         pico_Engine engine,
@@ -432,8 +432,8 @@ PICO_FUNC pico_resetEngine(
 /* Engine status and error/warning message retrieval ******************/
 
 /**
-   Returns in 'outMessage' a description of the engine status or of an
-   error that occurred with the most recently called engine-level API
+   Returns in 'outMessage' a description of the androidEngineStruct status or of an
+   error that occurred with the most recently called androidEngineStruct-level API
    function.
 */
 PICO_FUNC pico_getEngineStatusMessage(
@@ -444,7 +444,7 @@ PICO_FUNC pico_getEngineStatusMessage(
 
 /**
    Returns in 'outNrOfWarnings' the number of warnings that occurred
-   with the most recently called engine-level API function.
+   with the most recently called androidEngineStruct-level API function.
 */
 PICO_FUNC pico_getNrEngineWarnings(
         pico_Engine engine,
@@ -453,7 +453,7 @@ PICO_FUNC pico_getNrEngineWarnings(
 
 /**
    Returns in 'outMessage' a description of a warning that occurred
-   with the most recently called engine-level API function.
+   with the most recently called androidEngineStruct-level API function.
    'warningIndex' must be in the range 0..N-1 where N is the number of
    warnings returned by 'pico_getNrEngineWarnings'. 'outCode' returns
    the warning as an integer code (cf. PICO_WARN_*).

@@ -112,7 +112,7 @@ typedef struct sig_innerobj
     picoos_int16 ivalue10; /*reserved for nextPeak*/
     picoos_int16 ivalue11; /*reserved for nFrame*/
     picoos_int16 ivalue12; /*reserved for raw*/
-    picoos_int16 ivalue13; /*reserved for hts engine flag*/
+    picoos_int16 ivalue13; /*reserved for hts androidEngineStruct flag*/
     picoos_int16 ivalue14; /*reserved for ph id*/
     picoos_int16 ivalue15; /*reserved for Voiced*/
     picoos_int16 ivalue16; /*reserved for prevVoiced*/

@@ -113,7 +113,7 @@ static pico_status_t ctrlInitialize(register picodata_ProcessingUnit this, picoo
         }
     }
     if (PICO_OK != status) {
-        picoos_emRaiseException(this->common->em,status,NULL,(picoos_char*)"problem (re-)initializing the engine");
+        picoos_emRaiseException(this->common->em,status,NULL,(picoos_char*)"problem (re-)initializing the androidEngineStruct");
     }
     return status;
 }/*ctrlInitialize*/
@@ -514,8 +514,8 @@ typedef struct picoctrl_engine {
     ((eng)->magic == (((picoos_uint32) (uintptr_t) (eng)) ^ MAGIC_MASK))
 
 /**
- * performs an engine reset
- * @param    this : the engine object
+ * performs an androidEngineStruct reset
+ * @param    this : the androidEngineStruct object
  * @return    PICO_OK : reset performed
  * @return    otherwise error code
  * @callgraph
@@ -541,16 +541,16 @@ pico_status_t picoctrl_engReset(picoctrl_Engine this, picoos_int32 resetMode)
         status = picodata_cbReset(this->cbOut);
     }
     if (PICO_OK != status) {
-        picoos_emRaiseException(this->common->em,status,NULL,(picoos_char*) "problem resetting engine");
+        picoos_emRaiseException(this->common->em,status,NULL,(picoos_char*) "problem resetting androidEngineStruct");
     }
     return status;
 }
 
 /**
- * checks an engine handle
- * @param    this : the engine object
+ * checks an androidEngineStruct handle
+ * @param    this : the androidEngineStruct object
  * @return    PICO_OK : reset performed
- * @return    non-zero if 'this' is a valid engine handle
+ * @return    non-zero if 'this' is a valid androidEngineStruct handle
  * @return  zero otherwise
  * @callgraph
  * @callergraph
@@ -561,12 +561,12 @@ picoos_int16 picoctrl_isValidEngineHandle(picoctrl_Engine this)
 }/*picoctrl_isValidEngineHandle*/
 
 /**
- * creates a new engine object
- * @param    mm : memory manager to be used for this engine
- * @param    rm : resource manager to be used for this engine
- * @param    voiceName : voice definition to be used for this engine
+ * creates a new androidEngineStruct object
+ * @param    mm : memory manager to be used for this androidEngineStruct
+ * @param    rm : resource manager to be used for this androidEngineStruct
+ * @param    voiceName : voice definition to be used for this androidEngineStruct
  * @return    PICO_OK : reset performed
- * @return    new engine handle
+ * @return    new androidEngineStruct handle
  * @return  NULL otherwise
  * @callgraph
  * @callergraph
@@ -582,7 +582,7 @@ picoctrl_Engine picoctrl_newEngine(picoos_MemoryManager mm,
 
     picoctrl_Engine this = (picoctrl_Engine) picoos_allocate(mm, sizeof(*this));
 
-    PICODBG_DEBUG(("creating engine for voice '%s'",voiceName));
+    PICODBG_DEBUG(("creating androidEngineStruct for voice '%s'",voiceName));
 
     done = (NULL != this);
 
@@ -651,10 +651,10 @@ picoctrl_Engine picoctrl_newEngine(picoos_MemoryManager mm,
 }/*picoctrl_newEngine*/
 
 /**
- * disposes an engine object
- * @param    mm : memory manager associated to the engine
- * @param    rm : resource manager associated to the engine
- * @param    this : handle of the engine to dispose
+ * disposes an androidEngineStruct object
+ * @param    mm : memory manager associated to the androidEngineStruct
+ * @param    rm : resource manager associated to the androidEngineStruct
+ * @param    this : handle of the androidEngineStruct to dispose
  * @return    PICO_OK : reset performed
  * @return    void
  * @callgraph
@@ -679,8 +679,8 @@ void picoctrl_disposeEngine(picoos_MemoryManager mm, picorsrc_ResourceManager rm
 }/*picoctrl_disposeEngine*/
 
 /**
- * resets the exception manager of an engine
- * @param    this : handle of the engine
+ * resets the exception manager of an androidEngineStruct
+ * @param    this : handle of the androidEngineStruct
  * @return    void
  * @callgraph
  * @callergraph
@@ -693,10 +693,10 @@ void picoctrl_engResetExceptionManager(
 }/*picoctrl_engResetExceptionManager*/
 
 /**
- * returns the engine common pointer
- * @param    this : handle of the engine
+ * returns the androidEngineStruct common pointer
+ * @param    this : handle of the androidEngineStruct
  * @return    PICO_OK : reset performed
- * @return    the engine common pointer
+ * @return    the androidEngineStruct common pointer
  * @return    NULL if error
  * @callgraph
  * @callergraph
@@ -710,8 +710,8 @@ picoos_Common picoctrl_engGetCommon(picoctrl_Engine this) {
 }/*picoctrl_engGetCommon*/
 
 /**
- * feed raw 'text' into 'engine'. text may contain '\\0'.
- * @param    this : handle of the engine
+ * feed raw 'text' into 'androidEngineStruct'. text may contain '\\0'.
+ * @param    this : handle of the androidEngineStruct
  * @param    text : the input text
  * @param    textSize : size of the input text
  * @param    *bytesPut : the number of bytes effectively consumed from 'text'.
@@ -736,8 +736,8 @@ pico_status_t picoctrl_engFeedText(picoctrl_Engine this,
 }/*picoctrl_engFeedText*/
 
 /**
- * gets engine output bytes
- * @param    this : handle of the engine
+ * gets androidEngineStruct output bytes
+ * @param    this : handle of the androidEngineStruct
  * @param    buffer : the destination buffer
  * @param    bufferSize : max size of the destinatioon buffer
  * @param    *bytesReceived : the number of bytes effectively returned
@@ -793,7 +793,7 @@ picodata_step_result_t picoctrl_engFetchOutputItemBytes(
 
 /**
  * returns the last scheduled PU
- * @param    this : handle of the engine
+ * @param    this : handle of the androidEngineStruct
  * @return    a value >= 0 : last scheduled PU index
  * @remarks    designed to be used for performance evaluation
  * @callgraph
@@ -813,7 +813,7 @@ picodata_step_result_t picoctrl_getLastScheduledPU(
 
 /**
  * returns the last item type produced by the last scheduled PU
- * @param    this : handle of the engine
+ * @param    this : handle of the androidEngineStruct
  * @return    a value >= 0 : item type (see picodata.h for item types)
  * @return    a value = 0 : no item produced
  * @remarks    designed to be used for performance evaluation

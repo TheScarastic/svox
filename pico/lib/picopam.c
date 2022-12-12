@@ -458,7 +458,7 @@ static void get_default_boundary_limit(picoos_uint8 uBoundType,
 
 /**
  * allocation for PAM memory on pam PU
- * @param    mm : handle to engine memory manager
+ * @param    mm : handle to androidEngineStruct memory manager
  * @param    pam : handle to a pam struct
  * @return  PICO_OK : allocation successful
  * @return    PICO_ERR_OTHER : allocation errors
@@ -730,7 +730,7 @@ static pico_status_t pam_terminate(register picodata_ProcessingUnit this)
 /**
  * deallocaton of a pam PU
  * @param    this : handle to a pam PU struct
- * @param    mm : engine memory manager
+ * @param    mm : androidEngineStruct memory manager
  * @return  PICO_OK
  * @callgraph
  * @callergraph
@@ -770,8 +770,8 @@ static pico_status_t pam_subobj_deallocate(register picodata_ProcessingUnit this
 
 /**
  * creates a new pam processing unit
- * @param    mm    : engine memory manager
- * @param    common : engine common object pointer
+ * @param    mm    : androidEngineStruct memory manager
+ * @param    common : androidEngineStruct common object pointer
  * @param    cbIn : pointer to input buffer
  * @param    cbOut : pointer to output buffer
  * @param    voice : pointer to voice structure
@@ -3533,7 +3533,7 @@ static pico_status_t pam_process_event_feature(
                         pam->d2_syllable_in_word = 0;
                         /*pam->d2_current_primary_phrase_word++;*/
                     }
-                    if ((event_type == PICOPAM_EVENT_P_BOUND)) {
+                    if (event_type == PICOPAM_EVENT_P_BOUND) {
                         pam->d2_current_primary_phrase_word = 0;
                     }
                     break;

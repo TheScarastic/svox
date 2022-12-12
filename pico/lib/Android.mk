@@ -3,8 +3,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := libsvoxpico
-LOCAL_MULTILIB := 32
+LOCAL_MODULE := picoEngine
 
 LOCAL_SRC_FILES := \
 	picoacph.c \
@@ -36,6 +35,8 @@ LOCAL_SRC_FILES := \
 	picotok.c \
 	picotrns.c \
 	picowa.c
+
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/
 
 LOCAL_CFLAGS+= $(TOOL_CFLAGS)
 LOCAL_LDFLAGS+= $(TOOL_LDFLAGS)
