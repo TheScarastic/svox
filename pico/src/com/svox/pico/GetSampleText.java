@@ -16,14 +16,10 @@
 
 package com.svox.pico;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-
-import android.util.Log;
 
 /*
  * Returns the sample text string for the language requested
@@ -39,7 +35,7 @@ public class GetSampleText extends Activity {
         Intent i = getIntent();
         String language = i.getExtras().getString("language");
         String country = i.getExtras().getString("country");
-        String variant = i.getExtras().getString("variant");
+        String variant = i.getExtras().getString("locale");
 
         if (language.equals("eng")) {
           if (country.equals("GBR")){

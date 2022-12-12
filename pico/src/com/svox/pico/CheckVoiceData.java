@@ -16,28 +16,36 @@
 
 package com.svox.pico;
 
-import java.io.File;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /*
  * Checks if the voice data for the SVOX Pico Engine is present on the
  * sd card.
  */
 public class CheckVoiceData extends Activity {
-
     // The following constants are the same path constants as the ones defined
-    // in external/svox/pico/tts/com_svox_picottsengine.cpp
-    private final static String PICO_LINGWARE_PATH =
-            Environment.getExternalStorageDirectory() + "/svox/";
-    private final static String PICO_SYSTEM_LINGWARE_PATH = "/system/tts/lang_pico/";
+    // in external/svox/pico/picoEngine_AndroidWrapper/com_svox_picottsengine.cpp
+    private static String PICO_LINGWARE_PATH = "";
+            //Environment.getDataDirectory() + "/";
+
+    private final static String PICO_SYSTEM_LINGWARE_PATH = "/system/picoEngine_AndroidWrapper/lang_pico/";
 
     private final static String[] dataFiles = {
             "de-DE_gl0_sg.bin", "de-DE_ta.bin", "en-GB_kh0_sg.bin", "en-GB_ta.bin",
@@ -54,9 +62,22 @@ public class CheckVoiceData extends Activity {
         "deu-DEU", "eng-GBR", "eng-USA", "spa-ESP", "fra-FRA", "ita-ITA"
     };
 
+
+    //for installer
+    private String rootDirectory = "";
+    private CheckVoiceData self;
+    private static boolean sInstallationSuccess = false;
+    private static boolean sIsInstalling = false;
+    private final static Object sInstallerStateLock = new Object();
+    private Activity parent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //PICO_LINGWARE_PATH= getApplicationInfo().dataDir+"/";
+        self = this;
+        PICO_LINGWARE_PATH= getFilesDir().getPath()+"/";
+
 
         int result = TextToSpeech.Engine.CHECK_VOICE_DATA_PASS;
         boolean foundMatch = false;
@@ -94,6 +115,17 @@ public class CheckVoiceData extends Activity {
             }
         }
 
+        //STUB EJ
+        //pico can manage 6 languages. If one is missing, run installer.
+
+        if (!unavailable.isEmpty())
+        {
+            //InstallerActivity install=new InstallerActivity();
+            //Resources res = getResources();
+            runInstaller(PICO_LINGWARE_PATH);
+        }
+
+
         if ((languageCountry.size() > 0) && !foundMatch){
             result = TextToSpeech.Engine.CHECK_VOICE_DATA_FAIL;
         }
@@ -118,5 +150,98 @@ public class CheckVoiceData extends Activity {
         }
         return true;
     }
+
+
+
+    public void runInstaller(String directory){
+        try {
+            rootDirectory = directory;
+            Resources res = getResources();
+            AssetFileDescriptor langPackFd = res
+                    .openRawResourceFd(R.raw.svoxlangpack);
+            InputStream stream = langPackFd.createInputStream();
+
+            (new Thread(new unzipper(stream))).start();
+        } catch (IOException e) {
+            Log.e("PicoLangInstaller", "Unable to open langpack resource.");
+            e.printStackTrace();
+        }
+        //setContentView(R.layout.installing);
+    }
+
+
+    private boolean unzipLangPack(InputStream stream) {
+        FileOutputStream out;
+        byte buf[] = new byte[16384];
+        try {
+            ZipInputStream zis = new ZipInputStream(stream);
+            ZipEntry entry = zis.getNextEntry();
+            while (entry != null) {
+                if (entry.isDirectory()) {
+                    File newDir = new File(rootDirectory + entry.getName());
+                    newDir.mkdir();
+                } else {
+                    String name = entry.getName();
+                    File outputFile = new File(rootDirectory + name);
+                    String outputPath = outputFile.getCanonicalPath();
+                    name = outputPath
+                            .substring(outputPath.lastIndexOf("/") + 1);
+                    outputPath = outputPath.substring(0, outputPath
+                            .lastIndexOf("/"));
+                    File outputDir = new File(outputPath);
+                    outputDir.mkdirs();
+                    outputFile = new File(outputPath, name);
+                    outputFile.createNewFile();
+                    out = new FileOutputStream(outputFile);
+                    int numread = 0;
+                    do {
+                        numread = zis.read(buf);
+                        if (numread <= 0) {
+                            break;
+                        } else {
+                            out.write(buf, 0, numread);
+                        }
+                    } while (true);
+                    out.close();
+                }
+                entry = zis.getNextEntry();
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private class unzipper implements Runnable {
+        public InputStream stream;
+
+        public unzipper(InputStream is) {
+            stream = is;
+        }
+
+        public void run() {
+            boolean result = unzipLangPack(stream);
+            synchronized (sInstallerStateLock)
+            {
+                sInstallationSuccess = true;
+                sIsInstalling = false;
+            }
+
+            //finish();
+
+            /*if (sInstallationSuccess)*/ {
+                // installation completed: signal success (extra set to SUCCESS)
+
+                Intent installCompleteIntent =
+                        new Intent(TextToSpeech.Engine.ACTION_TTS_DATA_INSTALLED);
+                installCompleteIntent.putExtra(TextToSpeech.Engine.EXTRA_TTS_DATA_INSTALLED, TextToSpeech.SUCCESS);
+                self.sendBroadcast(installCompleteIntent);
+                self.finish();
+            }
+        }
+    }
+
+
 
 }

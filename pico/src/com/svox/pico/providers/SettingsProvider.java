@@ -24,17 +24,19 @@ import android.os.Environment;
 
 /*
  * This content provider enables the TtsService to get a String of configuration
- * data from the plugin engine and pass it back to that engine's .so file in the
+ * data from the plugin androidEngineStruct and pass it back to that androidEngineStruct's .so file in the
  * native layer.
  *
  * In this particular case, the only configuration information being passed is
- * the location of the data files for the Pico engine which live under
+ * the location of the data files for the Pico androidEngineStruct which live under
  *     /<external storage>/svox/
  *
  */
 
 public class SettingsProvider extends ContentProvider {
-    private class SettingsCursor extends MatrixCursor {
+    private class
+
+    SettingsCursor extends MatrixCursor {
         private String settings;
 
         public SettingsCursor(String[] columnNames) {
